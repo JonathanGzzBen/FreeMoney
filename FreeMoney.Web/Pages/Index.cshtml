@@ -9,4 +9,14 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <p>We will send you money for free, you only need to register:</p>
     <sub>Of course not</sub>
+
+    <form asp-page="Index" method="post">
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter name" autocomplete="off" />
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" placeholder="Enter email" autocomplete="off" />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 </div>
