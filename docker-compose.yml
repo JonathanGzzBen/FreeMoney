@@ -1,0 +1,6 @@
+version: "3"
+services:
+  web:
+    build: ./FreeMoney.Web
+    ports:
+      - "5001:80"
