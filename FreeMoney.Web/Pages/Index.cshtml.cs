@@ -21,6 +21,9 @@ namespace FreeMoney.Web.Pages
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
+        [BindProperty]
+        public List<UserRecord> UserRecords { get; private set; }
+
         private readonly ILogger<IndexModel> _logger;
         private readonly FreeMoneyDbContext _freeMoneyDbContext;
 
@@ -32,7 +35,8 @@ namespace FreeMoney.Web.Pages
 
         public void OnGet()
         {
-
+            UserRecords = _freeMoneyDbContext.UserRecords.ToList();
+            // return Page();
         }
 
         public async Task<IActionResult> OnPost([FromForm] string name, [FromForm] string email)

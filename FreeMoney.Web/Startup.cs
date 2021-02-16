@@ -27,6 +27,7 @@ namespace FreeMoney.Web
         {
             services.AddRazorPages();
 
+            Console.WriteLine(Configuration.GetConnectionString("DefaultConnection"));
             services.AddDbContext<FreeMoneyDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );

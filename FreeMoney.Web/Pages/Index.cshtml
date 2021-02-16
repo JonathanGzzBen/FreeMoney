@@ -1,4 +1,5 @@
 ﻿@page
+@using FreeMoney.Web.Models;
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -19,4 +20,12 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+
+    <p>Join this people</p>
+    <ul>
+        @foreach (var userRecord in Model.UserRecords)
+        {
+            <li>@(userRecord.Name)</li>
+        }
+    </ul>
 </div>
