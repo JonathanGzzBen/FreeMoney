@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using FreeMoney.Web.Models;
+using FreeMoney.Web.Data;
 
 namespace FreeMoney.Web.Pages
 {
@@ -20,10 +22,12 @@ namespace FreeMoney.Web.Pages
         public string Email { get; set; }
 
         private readonly ILogger<IndexModel> _logger;
+        private readonly FreeMoneyDbContext _freeMoneyDbContext;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, FreeMoneyDbContext freeMoneyDbContext)
         {
             _logger = logger;
+            _freeMoneyDbContext = freeMoneyDbContext;
         }
 
         public void OnGet()
@@ -31,10 +35,27 @@ namespace FreeMoney.Web.Pages
 
         }
 
-        public IActionResult OnPost([FromForm] string name)
+        public async Task<IActionResult> OnPost([FromForm] string name, [FromForm] string email)
         {
             Console.WriteLine(name);
+            if (!isEmailUnique(email))
+            {
+                return RedirectToPage("Index");
+            }
+            UserRecord userRecord = new UserRecord()
+            {
+                Name = name,
+                Email = email,
+            };
+            await _freeMoneyDbContext.UserRecords.AddAsync(userRecord);
+            await _freeMoneyDbContext.SaveChangesAsync();
             return RedirectToPage("Index");
+        }
+
+        private bool isEmailUnique(string email)
+        {
+            var recordsWithMatchingEmail = _freeMoneyDbContext.UserRecords.Where(ur => ur.Email == email).ToList();
+            return recordsWithMatchingEmail.Count == 0;
         }
     }
 }
