@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: free-money-web
+  name: free-money-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: free-money-web
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: free-money-web
+    spec:
+      containers:
+        - env:
+            - name: AZURE_FUNCTION_REGISTER_USER_RECORD
+            - name: FREE_MONEY_CONNECTION_STRING
+          image: freemoneycontainerregistry.azurecr.io/free-money-web:v1
+          name: free-money-web
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: free-money-web
+  name: free-money-web
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    io.kompose.service: free-money-web
+status:
+  loadBalancer: {}

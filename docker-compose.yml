@@ -1,9 +1,9 @@
 version: "3"
 services:
-  web:
+  free-money-web:
     build: ./FreeMoney.Web
     ports:
-      - "5001:80"
+      - "80:80"
     environment:
-      - ConnectionStrings:DefaultConnection=${FREE_MONEY_CONNECTION_STRING}
+      - FREE_MONEY_CONNECTION_STRING=${FREE_MONEY_CONNECTION_STRING}
       - AZURE_FUNCTION_REGISTER_USER_RECORD=${AZURE_FUNCTION_REGISTER_USER_RECORD}
