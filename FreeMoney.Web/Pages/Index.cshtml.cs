@@ -29,10 +29,14 @@ namespace FreeMoney.Web.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly FreeMoneyDbContext _freeMoneyDbContext;
 
+        private readonly string _azureFunctionRegisterUserRecordUrl;
+
         public IndexModel(ILogger<IndexModel> logger, FreeMoneyDbContext freeMoneyDbContext)
         {
             _logger = logger;
             _freeMoneyDbContext = freeMoneyDbContext;
+            _azureFunctionRegisterUserRecordUrl = Environment.GetEnvironmentVariable("AZURE_FUNCTION_REGISTER_USER_RECORD");
+            Console.WriteLine(_azureFunctionRegisterUserRecordUrl);
         }
 
         public void OnGet()
@@ -55,7 +59,8 @@ namespace FreeMoney.Web.Pages
             await _freeMoneyDbContext.UserRecords.AddAsync(userRecord);
             await _freeMoneyDbContext.SaveChangesAsync();
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, $"https://free-money-functions.azurewebsites.net/api/RegisterUserRecord?name={name}&email={email}");
+            // var request = new HttpRequestMessage(HttpMethod.Get, $"https://free-money-functions.azurewebsites.net/api/RegisterUserRecord?name={name}&email={email}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_azureFunctionRegisterUserRecordUrl}?name={name}&email={email}");
             await client.SendAsync(request);
             return RedirectToPage("Index");
         }
