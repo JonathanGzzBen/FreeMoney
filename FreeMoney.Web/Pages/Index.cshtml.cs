@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using FreeMoney.Web.Models;
 using FreeMoney.Web.Data;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace FreeMoney.Web.Pages
 {
@@ -36,7 +38,6 @@ namespace FreeMoney.Web.Pages
         public void OnGet()
         {
             UserRecords = _freeMoneyDbContext.UserRecords.ToList();
-            // return Page();
         }
 
         public async Task<IActionResult> OnPost([FromForm] string name, [FromForm] string email)
@@ -53,6 +54,9 @@ namespace FreeMoney.Web.Pages
             };
             await _freeMoneyDbContext.UserRecords.AddAsync(userRecord);
             await _freeMoneyDbContext.SaveChangesAsync();
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://free-money-functions.azurewebsites.net/api/RegisterUserRecord?name={name}&email={email}");
+            await client.SendAsync(request);
             return RedirectToPage("Index");
         }
 
