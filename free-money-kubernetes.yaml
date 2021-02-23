@@ -1,56 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.22.0 (955b78124)
-  creationTimestamp: null
+  name: webapp
   labels:
-    io.kompose.service: free-money-web
-  name: free-money-web
+    app: weather-forecast
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: free-money-web
-  strategy: {}
+      service: webapp
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.22.0 (955b78124)
-      creationTimestamp: null
       labels:
-        io.kompose.service: free-money-web
+        app: weather-forecast
+        service: webapp
     spec:
       containers:
-        - env:
-            - name: AZURE_FUNCTION_REGISTER_USER_RECORD
-            - name: FREE_MONEY_CONNECTION_STRING
+        - name: webapp
           image: freemoneycontainerregistry.azurecr.io/free-money-web:v1
-          name: free-money-web
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
-          resources: {}
-      restartPolicy: Always
-status: {}
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+            - name: FREE_MONEY_CONNECTION_STRING
+              value: Server=tcp:free-money-server.database.windows.net,1433;Initial Catalog=free-money-db;Persist Security Info=False;User ID=FreeMoneyUser;Password=FreeMoneyPass    1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+            - name: AZURE_FUNCTION_REGISTER_USER_RECORD
+              value: https://free-money-functions.azurewebsites.net/api/RegisterUserRecord
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.22.0 (955b78124)
-  creationTimestamp: null
+  name: webapp
   labels:
-    io.kompose.service: free-money-web
-  name: free-money-web
+    app: weather-forecast
+    service: webapp
 spec:
+  type: LoadBalancer
   ports:
-    - name: "80"
-      port: 80
+    - port: 80
       targetPort: 80
+      protocol: TCP
   selector:
-    io.kompose.service: free-money-web
-status:
-  loadBalancer: {}
+    service: webapp
